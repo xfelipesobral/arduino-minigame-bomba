@@ -1,15 +1,18 @@
 import { Router, Request, Response } from 'express'
 
-import socket from './socket.routes'
+import { httpSendMessageToDisplay } from '../modules/display/http/sendMessage'
 
 const router = Router()
 
-router.get('/', (request: Request, response: Response) => {
-    response.json({
-        status: 'ativo'
+// Rota principal
+router.route('/')
+    // GET: Retorna uma mensagem de status
+    .get((request: Request, response: Response) => {
+        response.json({
+            status: 'API funcionando! 🚀',
+        })
     })
-})
-
-router.use('/socket', socket)
+    // POST: Envia uma mensagem para a interface conectada
+    .post(httpSendMessageToDisplay)
 
 export default router

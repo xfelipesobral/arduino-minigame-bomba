@@ -1,10 +1,8 @@
-import React from 'react'
-
-interface iVideo {
+interface Params {
     url: string
 }
 
-function Video({ url }: iVideo) {
+export default function Final({ url }: Params) {
 
     return (
         <div>
@@ -14,5 +12,3 @@ function Video({ url }: iVideo) {
         </div>
     )
 }
-
-export default Video

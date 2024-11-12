@@ -1,81 +1,98 @@
-import React, { useState, useEffect } from 'react'
-import { v4 as uuid } from 'uuid'
+import { useState, useEffect, useRef } from 'react'
 
 import { io } from 'socket.io-client'
 
-import config from '../../json/config.json'
+import { storageGetDisplayId, storageSetDisplayId } from '../../functions/storage'
 
-import Conectando from './etapas/conectando'
-import Conectado from './etapas/conectado'
-import Video from './etapas/video'
+import Connecting from './steps/Connecting'
+import Connected from './steps/Connected'
+import Final from './steps/final'
 
 import './home.css'
 
-function Home() {
-	const [etapa, setEtapa] = useState('carregando')
-	const [ciclo, setCiclo] = useState('1')
-	const [situacao, setSituacao] = useState('1')
-	const [id, setId] = useState('')
+const API_URL = 'http://localhost:3300'
+
+export default function Home() {
+	const [step, setStep] = useState<'connecting' | 'connected' | 'final'>('connecting') // Etapa do jogo)
+	const [tick, setTick] = useState('1') // Tempo da bomba
+	const [status, setStatus] = useState('1') // Status da bomba
+	const [questions, setQuestions] = useState<string[]>([]) // Perguntas
+	const [id, setId] = useState('') // ID do display
+
+	const debounceInitialSocket = useRef<number>() // Debounce para inicializacao do socket
 
 	useEffect(() => {
-		let id = localStorage.getItem('arduinoBombaID')
-
-		if (!id) {
-			id = uuid()
-			localStorage.setItem('arduinoBombaID', id)
-		}
-
-		setId(id)
-		inicializaSocket(id)
-
-		setEtapa('conectando')
+		initSocket() // Inicia comunicacao com o socket ao montar o componente
 	}, [])
 
-	const trataMensagem = (mensagem: string) => {
-		if (mensagem === 'conectado') {
-			setEtapa('conectado')
-			setCiclo('1')
-			return
-		}
+	// Inicia comunicacao com o socket
+	const initSocket = () => {
+		window.clearTimeout(debounceInitialSocket.current)
 
-		if (mensagem.match('ciclo')) {
-			const [_, ciclo] = mensagem.split('=')
-			setCiclo(ciclo)
-			return
-		}
-
-		if (mensagem.match('situacao')) {
-			const [_, situacao] = mensagem.split('=')
-			setSituacao(situacao)
-			setEtapa('video')
-			return
-		}
+		// Debounce para evitar chamadas desnecessarias
+		debounceInitialSocket.current = window.setTimeout(() => {
+			socket()
+		}, 100)
 	}
 
-	const inicializaSocket = (id: string) => {
-		const socket = io(config.socket)
+	// Monta a comunicacao com a api via socket
+	const socket = () => {
+		const id = storageGetDisplayId() || ''
 
-		socket.on(id, (mensagem) => {
-			trataMensagem(mensagem.replace(/(\r\n|\n|\r|b'|')/g, '').replace(/(?:\\[rn])+/g, ''))
+		const socket = io(API_URL, { query: { id } })
+
+		socket.on('connected', ({ id, smallKey }: Display) => {
+			storageSetDisplayId(id)
+			setId(smallKey)
+		})
+
+		socket.on('default', ({ content, questions }: { content?: string, questions?: string[] }) => {
+			if (questions) {
+				setQuestions(questions)
+			}
+
+			if (content) {
+				translateContent(content.replace(/(\r\n|\n|\r|b'|')/g, '').replace(/(?:\\[rn])+/g, ''))
+			}
 		})
 	}
 
+	// Traduz a mensagem recebida do socket
+	const translateContent = (content: string) => {
+		if (content === 'conectado') {
+			setStep('connected')
+			setTick('1')
+			return
+		}
+
+		if (content.match('ciclo')) {
+			const [_, ciclo] = content.split('=')
+			setTick(ciclo)
+			return
+		}
+
+		if (content.match('situacao')) {
+			const [_, situacao] = content.split('=')
+			setStatus(situacao)
+			setStep('final')
+			return
+		}
+	}
+
 	return (
-		<div className='Home'>
-			<div className='conteudo'>
+		<div className='home'>
+			<div className='content'>
 				{
 					{
-						'conectando': <Conectando id={id} />,
-						'conectado': <Conectado ciclo={ciclo} />,
-						'video': <Video url={situacao === '1' ? 'bomba' : 'fogos'} />
-					}[etapa]
+						'connecting': <Connecting id={id} />,
+						'connected': <Connected tick={tick} questions={questions} />,
+						'final': <Final url={status === '1' ? 'bomba' : 'fogos'} />
+					}[step]
 				}
 			</div>
 			<footer>
-				<p>UFPR Palotina - Licenciatura em Computação - <a href='https://github.com/xfelipesobral/arduino-bomba' target='_BLANK'>Github</a></p>
+				<p>UFPR Palotina - Licenciatura em Computação - <a href='https://github.com/xfelipesobral/arduino-bomba' target='_BLANK' rel="noreferrer">Github</a></p>
 			</footer>
 		</div>
 	)
 }
-
-export default Home;

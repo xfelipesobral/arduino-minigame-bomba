@@ -1,4 +1,4 @@
-.Home {
+.home {
 	color: #ffffff;
 	display: flex;
 	flex-direction: column;
@@ -12,11 +12,11 @@
 	text-align: center;
 }
 
-.Home a {
+.home a {
 	color: #ffffff;
 }
 
-.Home .conteudo {
+.home .content {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -24,50 +24,76 @@
 	flex-grow: 1;
 }
 
-.Home h1 {
+.home h1 {
 	margin: 50px 0 15px 0;
 }
 
-.Home p {
-	font-family: 'Courier New', Courier, monospace;
-	background-color: #000000;
-	padding: 5px;
-}
-
-.Home video {
+.home video {
 	width: 100vw;
 	height: 80vh;
 }
 
-.Home .conectado img {
+.home .connected img {
 	border-radius: 100%;
 	width: 200px;
 	height: 200px;
 	border: 5px solid #fff;
 }
 
-.Home .conectado h1 {
+.home .connected h1 {
 	font-size: 3rem;
 	font-family: 'Courier New', Courier, monospace;
 	margin-bottom: 25px;
 }
 
-.Home .conectado .lista {
+.home .connected .list {
 	padding: 20px 40px;
 	color: #fff;
 	text-align: left;
 	border-radius: 10px;
 }
 
-.Home .conectado .lista h2 {
+.home .connected .list h2 {
 	margin-bottom: 10px;
 }
 
-.Home .conectado .lista ol {
+.home .connected .list ol {
 	padding-left: 20px;
 }
 
-.Home footer {
+.home footer {
 	padding: 10px;
 	background-color: #000000;
+	font-family: 'Courier New', Courier, monospace;
+}
+
+.home footer a:hover {
+	text-decoration: underline;
+}
+
+.home .connecting {
+	position: relative;
+	min-width: 400px;
+}
+
+.home .connecting h1 {
+	margin: 0;
+}
+
+.home .connecting .informations {
+	position: absolute;
+	top: 0;
+	height: 100%;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	gap: 10px;
+}
+
+.home .connecting .informations p {
+	font-family: 'Courier New', Courier, monospace;
+	background-color: #000000;
+	padding: 5px 10px;
 }
