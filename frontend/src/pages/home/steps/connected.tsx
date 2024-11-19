@@ -18,7 +18,7 @@ export default function Connected({ tick, questions, keystroke }: Params) {
 
     return (
         <div className='connected'>
-            <img src={`/assets/meme/${getMemeImage()}.webp`} />
+            <img src={`/cronometro/assets/meme/${getMemeImage()}.webp`} />
             <h1>{tick.padStart(2, '0')}</h1>
 
             <div className="keyscontainer">
