@@ -9,7 +9,7 @@ interface Params {
 export default function Connecting({ id }: Params) {
 
     return (
-        <div className='conectando'>
+        <div className='connecting'>
             <Lottie
                 options={{
                     loop: true,

@@ -5,16 +5,19 @@ interface Params {
 
 export default function Connected({ tick, questions }: Params) {
     const getMemeImage = () => {
-        const p = (Number(tick) / 60) * 100
+        const t = Number(tick)
 
-        if (p > 80) return 3
-        if (p > 40) return 2
+        if (t > 50) return 6
+        if (t > 40) return 5
+        if (t > 30) return 4
+        if (t > 20) return 3
+        if (t > 10) return 2
         return 1
     }
 
     return (
         <div className='connected'>
-            <img src={`/assets/meme/${getMemeImage()}.png`} />
+            <img src={`/assets/meme/${getMemeImage()}.webp`} />
             <h1>{tick.padStart(2, '0')}</h1>
 
             <div className='list'>

@@ -13,31 +13,31 @@ const int LEDVERDE = 12;
 const int INTERVALO = 1000;
 
 // Senha do desarme
-const String AVALIACAO[4] = {"5", "0", "#", "1"};
+const String AVALIACAO[4] = { "5", "0", "#", "1" };
 
 // Matriz do teclado
 char teclas[LINHAS][COLUNAS] = {
-  {'1', '2', '3'},
-  {'4', '5', '6'},
-  {'7', '8', '9'},
-  {'*', '0', '#'}
+  { '1', '2', '3' },
+  { '4', '5', '6' },
+  { '7', '8', '9' },
+  { '*', '0', '#' }
 };
 
 // Define pinos do teclado
-byte pinosLinha[LINHAS] = {7, 2, 3, 5};
-byte pinosColuna[COLUNAS] = {6, 8, 4};
+byte pinosLinha[LINHAS] = { 7, 2, 3, 5 };
+byte pinosColuna[COLUNAS] = { 6, 8, 4 };
 
 // Inicializa teclado
 Keypad teclado = Keypad(makeKeymap(teclas), pinosLinha, pinosColuna, LINHAS, COLUNAS);
 
 // Estados
-unsigned long ultimoTempo = 0; // Salva ultimo tempo para calcular o proximo ciclo
-int ciclo = 1; // Quantidade de ciclos rodados (Max: 60 = 1 minuto)
-bool notificouConectado = false; // Se notificou quando a placa foi conectada
+unsigned long ultimoTempo = 0;    // Salva ultimo tempo para calcular o proximo ciclo
+int ciclo = 1;                    // Quantidade de ciclos rodados (Max: 60 = 1 minuto)
+bool notificouConectado = false;  // Se notificou quando a placa foi conectada
 bool notificouStatusFinal = false;
-String digitado[4] = {"", "", "", ""}; // Estado da resposta atual
-int situacao = 0; // 0 -> Contando para explosao, 1 -> Explodiu, 2 -> Conseguiu desarmar
-String mensagem = ""; // Escrever mensagem na serial
+String digitado[4] = { "", "", "", "" };  // Estado da resposta atual
+int situacao = 0;                         // 0 -> Contando para explosao, 1 -> Explodiu, 2 -> Conseguiu desarmar
+String mensagem = "";                     // Escrever mensagem na serial
 
 // Manipula os ciclos, tocando o buzzer.. contando.. notificando..
 void manipulaCiclo(unsigned long tempoAtual) {
@@ -108,7 +108,6 @@ void rodaCiclo() {
         } else if (i == 3) {
           situacao = 2;
         }
-
       }
 
       mensagem += digitado[i];
@@ -116,7 +115,7 @@ void rodaCiclo() {
 
     mensagem += "=";
 
-    digitalWrite(LEDVERDE, HIGH); // Sinaliza que o evento foi computado
+    digitalWrite(LEDVERDE, HIGH);  // Sinaliza que o evento foi computado
     Serial.println(mensagem + situacao);
   }
 }
@@ -156,7 +155,7 @@ void loop() {
   if (ciclo > 60) {
     situacao = 1;
   }
-  
+
   // Checar status
   if (situacao != 0) {
     if (!notificouStatusFinal) {

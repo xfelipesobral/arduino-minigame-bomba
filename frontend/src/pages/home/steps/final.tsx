@@ -1,8 +1,9 @@
 interface Params {
-    url: string
+    success: boolean
 }
 
-export default function Final({ url }: Params) {
+export default function Final({ success }: Params) {
+    const url = success ? 'fireworks' : 'explosion'
 
     return (
         <div>

@@ -4,8 +4,8 @@ import { io } from 'socket.io-client'
 
 import { storageGetDisplayId, storageSetDisplayId } from '../../functions/storage'
 
-import Connecting from './steps/Connecting'
-import Connected from './steps/Connected'
+import Connecting from './steps/connecting'
+import Connected from './steps/connected'
 import Final from './steps/final'
 
 import './home.css'
@@ -86,7 +86,7 @@ export default function Home() {
 					{
 						'connecting': <Connecting id={id} />,
 						'connected': <Connected tick={tick} questions={questions} />,
-						'final': <Final url={status === '1' ? 'bomba' : 'fogos'} />
+						'final': <Final success={status !== '1'} />
 					}[step]
 				}
 			</div>

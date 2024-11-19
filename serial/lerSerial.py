@@ -2,29 +2,27 @@ import serial
 import requests
 
 # Define as variaveis iniciais
-PORTA = "/dev/cu.usbmodem11201"  # Nome da porta em que a placa esta conectada
-TAXA_TRANSMISSAO = 9600  # Taxa de transmissao que a placa esta configurada
-ID_TELA = "773d0789-7546-4708-8e7c-035c47a12542"  # Identificador gerado pela interface
-ENDERECO_SOCKET = (
-    "http://localhost:3300/tunel"  # Endereco do tunel de comunicacao da API
-)
+PORT = "/dev/cu.usbserial-120"  # Nome da porta em que a placa esta conectada
+BAUD_RATE = 9600  # Taxa de transmissao que a placa esta configurada
+SCREEN_ID = "J0Y6"  # Identificador gerado pela interface
+API = "http://localhost:3300/"  # Endereco do tunel de comunicacao da API
 
 
 # Enviar para a API
-def comunicaApi(dados):
-    requests.post(ENDERECO_SOCKET, json={"id": ID_TELA, **dados})
+def sendToApi(data):
+    requests.post(API, json={"id": SCREEN_ID, **data})
 
 
 # Enviar conteudo para a API
-def enviarConteudoParaApi(conteudo):
-    comunicaApi({"conteudo": conteudo})
+def sendCommandToApi(content):
+    sendToApi({"content": content})
 
 
 # Enviar perguntas iniciais para a API
-def enviarPerguntasParaApi():
-    comunicaApi(
+def sendQuestionsToApi():
+    sendToApi(
         {
-            "perguntas": [
+            "questions": [
                 "Quanto é 2 + 2?",
                 "Quanto é 3 * 3?",
                 "Quanto é 4 / 2?",
@@ -35,13 +33,13 @@ def enviarPerguntasParaApi():
 
 
 # Conectar ao Arduino pela porta serial
-def conectarArduino():
-    conectado = False
-    while not conectado:
+def connectToArduino():
+    connected = False
+    while not connected:
         try:
-            ser = serial.Serial(PORTA, TAXA_TRANSMISSAO)
-            print("Conectado ao Arduino pela porta: {ser.name}")
-            conectado = True
+            ser = serial.Serial(PORT, BAUD_RATE)
+            print(f"Conectado ao Arduino pela porta: {ser.port}")
+            connected = True
             return ser
         except:
             print("Aguardando conexão com o Arduino...")
@@ -50,12 +48,12 @@ def conectarArduino():
 ##################################################################
 # Inicia o script
 
-enviarPerguntasParaApi()  # Envia perguntas iniciais para a API
-ser = conectarArduino()  # Conecta ao Arduino
+sendQuestionsToApi()  # Envia perguntas iniciais para a API
+ser = connectToArduino()  # Conecta ao Arduino
 
 # Le continuamente os dados da porta serial e envia para a API
 while True:
-    linha = str(ser.readline())  # Le linha da porta serial
-    if len(linha) > 0:  # Quando ter alguma informacao na linha
-        print("Dados recebidos: {linha}")
-        enviarConteudoParaApi(linha)  # Envia conteudo para a API
+    line = str(ser.readline())  # Le linha da porta serial
+    if len(line) > 0:  # Quando ter alguma informacao na linha
+        print(f"Dados recebidos: {line}")
+        sendCommandToApi(line)  # Envia conteudo para a API
