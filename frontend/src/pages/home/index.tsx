@@ -18,8 +18,10 @@ export default function Home() {
 	const [status, setStatus] = useState('1') // Status da bomba
 	const [questions, setQuestions] = useState<string[]>([]) // Perguntas
 	const [id, setId] = useState('') // ID do display
+	const [keystrokes, setKeystrokes] = useState<string[]>([]) // Teclas pressionadas
 
 	const debounceInitialSocket = useRef<number>() // Debounce para inicializacao do socket
+	const originalKeystrokes = useRef<string[]>([]) // Salva array real de teclas pressionadas
 
 	useEffect(() => {
 		initSocket() // Inicia comunicacao com o socket ao montar o componente
@@ -60,6 +62,8 @@ export default function Home() {
 	// Traduz a mensagem recebida do socket
 	const translateContent = (content: string) => {
 		if (content === 'conectado') {
+			originalKeystrokes.current = []
+			setKeystrokes([])
 			setStep('connected')
 			setTick('1')
 			return
@@ -77,6 +81,14 @@ export default function Home() {
 			setStep('final')
 			return
 		}
+
+		if (content.match('tecla')) {
+			const [_, keystroke] = content.split('=')
+
+			originalKeystrokes.current = [...originalKeystrokes.current, keystroke]
+			setKeystrokes([...originalKeystrokes.current])
+			return
+		}
 	}
 
 	return (
@@ -85,7 +97,7 @@ export default function Home() {
 				{
 					{
 						'connecting': <Connecting id={id} />,
-						'connected': <Connected tick={tick} questions={questions} />,
+						'connected': <Connected tick={tick} questions={questions} keystroke={keystrokes} />,
 						'final': <Final success={status !== '1'} />
 					}[step]
 				}

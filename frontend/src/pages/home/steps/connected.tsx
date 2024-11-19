@@ -1,9 +1,10 @@
 interface Params {
     tick: String
     questions: string[]
+    keystroke: string[]
 }
 
-export default function Connected({ tick, questions }: Params) {
+export default function Connected({ tick, questions, keystroke }: Params) {
     const getMemeImage = () => {
         const t = Number(tick)
 
@@ -19,6 +20,14 @@ export default function Connected({ tick, questions }: Params) {
         <div className='connected'>
             <img src={`/assets/meme/${getMemeImage()}.webp`} />
             <h1>{tick.padStart(2, '0')}</h1>
+
+            <div className="keyscontainer">
+                {keystroke.map((key, i) => (
+                    <div key={key + i} className="key">
+                        <p>{key}</p>
+                    </div>
+                ))}
+            </div>
 
             <div className='list'>
                 <ol>
