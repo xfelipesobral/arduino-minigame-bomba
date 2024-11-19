@@ -92,6 +92,8 @@ void rodaCiclo() {
   // Se clicou em uma tecla
   if (tecla) {
     mensagem = "tecla=";
+    mensagem += tecla;
+    Serial.println(mensagem);
 
     int indiceCampoVazio = campoVazio();
 
@@ -109,14 +111,9 @@ void rodaCiclo() {
           situacao = 2;
         }
       }
-
-      mensagem += digitado[i];
     }
 
-    mensagem += "=";
-
     digitalWrite(LEDVERDE, HIGH);  // Sinaliza que o evento foi computado
-    Serial.println(mensagem);
   }
 }
 
