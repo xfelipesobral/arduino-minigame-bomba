@@ -5,7 +5,7 @@ import requests
 PORTA = "/dev/cu.usbserial-120"  # Nome da porta em que a placa esta conectada
 TAXA_TRANSMISSAO = 9600  # Taxa de transmissao que a placa esta configurada
 ID_TELA = "O5JZ"  # Identificador gerado pela interface
-API = "http://localhost:3300/"  # Endereco do tunel de comunicacao da API
+API = "https://minigamebomba.felipesobral.com.br/"  # Endereco do tunel de comunicacao da API
 
 
 # Enviar para a API

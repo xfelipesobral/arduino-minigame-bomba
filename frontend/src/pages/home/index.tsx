@@ -10,7 +10,7 @@ import Final from './steps/final'
 
 import './home.css'
 
-const API_URL = 'http://localhost:3300'
+const API_URL = 'https://minigamebomba.felipesobral.com.br/'
 
 export default function Home() {
 	const [step, setStep] = useState<'connecting' | 'connected' | 'final'>('connecting') // Etapa do jogo)
