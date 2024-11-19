@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Interface para Minigame de Desarme de Bombas Integrado com Arduino",
   "private": true,
+  "homepage": "/cronometro",
   "keywords": [
     "arduino",
     "minigame",
